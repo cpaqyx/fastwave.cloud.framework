@@ -1,0 +1,70 @@
+spring:
+  application:
+    name: fastwave-cloud-zuul
+  redis:
+    host: 10.101.43.125
+    port: 6379
+    password: 
+    # 连接超时时间（毫秒）
+    timeout: 10000
+    pool:
+      # 连接池中的最大空闲连接
+      max-idle: 8
+      # 连接池中的最小空闲连接
+      min-idle: 10
+      # 连接池最大连接数（使用负值表示没有限制）
+      max-active: 100
+      # 连接池最大阻塞等待时间（使用负值表示没有限制）
+      max-wait: -1
+  http:
+    multipart:
+      maxFileSize: 50MB
+      maxRequestSize: 50MB
+server:
+  port: 8762
+eureka:
+  client:
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://127.0.0.1:8761/eureka
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.cloud.client.ipAddress}:${spring.application.instance_id:${server.port}}
+    metadata-map:
+      zone: ABC      # eureka可以理解的元数据
+      lilizhou: BBC  # 不会影响客户端行为
+    lease-renewal-interval-in-seconds: 5
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 60000
+ribbon:
+  ConnectTimeout: 3000
+  ReadTimeout: 60000
+
+zuul:
+  ignored-headers: Access-Control-Allow-Credentials, Access-Control-Allow-Origin
+  host:
+      connect-timeout-millis: 100000  #默认情况下，zuul的熔断机制超时时间是2秒，当一个服务响应的时间较长就会报网关超时错误
+      socket-timeout-millis: 600000  
+  routes:  
+    # 示例说明：如果网站启动地址为"localhost:8762",认证启动为“localhost:8763”，
+    # 则直接访问认证接口时调用地址为：10.101.43.171:8763/auth/user/login
+    # 而网关地址为：10.101.43.171:8762/fastwave-common-auth/auth/user/login
+    fastwave-common-auth:  
+      path: /fastwave-common-auth/**  
+      #url: http://localhost:8763/   # 如果注释则会通过eureka注册中心来获取服务，可以起到负载均衡的作用
+    fastwave-service-admin:  
+      path: /fastwave-service-admin/**  
+      #url: http://localhost:8764/
+
+#security: 
+#  user: 
+#    name: chengli  
+#    password: 123456 
+    
+hystrix:
+    command:
+        default:
+            execution:
+                isolation:
+                    thread:
+                        timeoutInMilliseconds: 90000

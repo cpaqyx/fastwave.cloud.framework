@@ -1,0 +1,1447 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+    <title>视频监控</title>
+    <!-- <link rel="stylesheet" href="css/bootstrap.min.css"> -->
+    <script src="http://118.126.95.57:8203/smallWindowVideo/js/jquery-1.11.0.js"></script>
+    <!--<script type="text/javascript" src="js/bootstrap-table.js"></script>
+引入样式 -->
+    <!-- <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"> -->
+    <!-- 引入组件库 -->
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .form-control {
+            height: 30px;
+        }
+        
+        .form-inline {
+            display: inline-block;
+            *display: inline;
+            zoom: 1;
+        }
+        
+        .page-list {
+            display: none !important;
+        }
+        
+        .alert {
+            position: fixed;
+            width: 400px;
+            top: 20%;
+            left: 50%;
+            margin-left: -200px;
+            z-index: -1;
+            height: auto;
+            display: none;
+        }
+        
+        .infoTip {
+            margin: 10px 0 15px;
+            text-indent: 1.5em
+        }
+        
+        .form-group {
+            margin-bottom: 0;
+        }
+        
+        .border_red {
+            border: solid 1px #f66;
+        }
+        
+        .redstar {
+            color: red;
+            font-size: 20px;
+            vertical-align: top;
+        }
+        
+        .progress-bar-gray {
+            background-color: #909599;
+        }
+        
+        .form-group i {
+            display: block;
+            min-width: 200px;
+            height: 20px;
+            font-style: normal;
+            font-size: 12px;
+            color: #f66;
+            line-height: 20px;
+        }
+        
+        .pannel-body .panel-default {
+            background: #eff0f3;
+            border-color: transparent;
+        }
+        
+        .pannel-body #formSearch .form-group {
+            /*  width: auto !important; */
+            float: left;
+            line-height: 30px;
+            width: 220px;
+        }
+        
+        .pannel-body #formSearch .form-group .input-group {
+            float: none;
+            width: 120px;
+        }
+        
+        .pannel-body #formSearch .form-group button.btn-primary {
+            width: 60px;
+            height: 30px;
+            background: #f1a449 !important;
+            color: #fff;
+            text-align: center !important;
+        }
+        
+        .pannel-body #formSearch select {
+            padding: 0;
+            line-height: 30px;
+            text-indent: 1em;
+        }
+         
+        .pannel-body #formSearch .form-group label {
+            float: left;
+            padding: 0;
+            ;
+        }
+        
+        .pannel-body #formSearch .form-group button#btn_query {
+            background: #25b7f4 !important;
+        }
+        
+        #toolbar {
+            background: #eff0f3 !important;
+        }
+        
+        #grid,
+        #selectCorrelationInfoWindowTable {
+            table-layout: fixed;
+        }
+        
+        #grid tr td,
+        #selectCorrelationInfoWindowTable tr td {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+            padding-left: 8px !important;
+        }
+        
+        #grid tr td.bs-checkbox,
+        #selectCorrelationInfoWindowTable tr td.bs-checkbox {
+            padding-left: 0px !important;
+            width: 60px;
+        }
+        /*分页*/
+        
+        #searchPage {
+            width: 30px;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+        }
+        
+        .pagination {
+            display: block !important;
+        }
+        
+        .pull-right.pagination {
+            margin-left: 5px;
+        }
+        
+        .pagination>li>a {
+            float: none;
+            line-height: 30px !important;
+            border: 0;
+        }
+        
+        .jumpPage {
+            width: 40px;
+            height: 30px;
+            display: inline-block;
+            padding: 0;
+            text-align: center;
+        }
+        
+        .fixed-table-pagination {
+            display: block !important;
+            text-indent: 1.2em;
+        }
+        .openVideo {
+            height: 20px;
+            width: 100%;
+            padding-top: 15px;
+            padding-bottom: 10px;
+            font-family: '微软雅黑 Regular', '微软雅黑';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 14px;
+        }
+        
+        .openVideoInfo {
+            width: 40%;
+            display: inline-block;
+            margin-left: 10%;
+        }
+        
+        .videoButton {
+            height: 18px;
+            line-height: 18px;
+            margin-top: 3px;
+            background: #fff;
+            color: #000;
+            text-align: center;
+            font-size: 12px;
+            font-family: '微软雅黑 Regular', '微软雅黑';
+            position: absolute;
+            width: 30px;
+            cursor: pointer;
+        }
+        .glyphicon:before {
+            content: "";
+        }
+        
+        .modal-dialog {
+            margin: 2% auto;
+        }
+        
+        .modal-dialog .form-group label {
+            float: left;
+        }
+        
+        .modal-dialog .form-group .controls {
+            float: left;
+        }
+        
+        .input-group {
+            display: inline-block;
+            float: left;
+        }
+        
+        .form-horizontal .controls {
+            display: inline-block;
+        }
+        
+        .form-horizontal .control-label {
+            text-align: right;
+        }
+        
+        
+        .controls select {
+            padding: 3px 6px;
+        }
+        /*拐角*/
+        
+        .topmasking {
+            width: 100%;
+            height: 100%;
+            background: #cccccc;
+            opacity: 0.5;
+            filter: alpha(opacity=50);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            display: none;
+        }
+        
+        .videoIMG {
+            position: absolute;
+            cursor: pointer;
+        }
+        
+        #VoiceIntercom span {
+            height: 30px;
+            width: 210px;
+            display: block;
+            padding-top: 10px;
+            padding-left: 10px;
+            color: #f1f1f1;
+        }
+        
+        .selectOption {
+            width: 50%;
+            height: 22px;
+            font-size: 10px;
+            color: #333;
+        }
+        
+        .toTelBtn {
+            padding: 2px 3px;
+            float: left;
+            width: 82px;
+            color: #333;
+            font-size: 10px;
+        }
+        
+        #playBackDiv span {
+            height: 21px;
+            width: 210px;
+            display: block;
+            padding-top: 10px;
+            padding-left: 10px;
+        }
+        
+        #setWndCountDiv span {
+            height: 40px;
+            line-height: 30px;
+            width: 110px !important;
+            display: block;
+            padding-left: 10px;
+            cursor: pointer;
+            color: #f1f1f1;
+        }
+        
+        #settingVideo span {
+            height: 30px;
+            line-height: 30px;
+            width: 250px;
+            display: block;
+            padding-left: 10px;
+            margin-top: 10px;
+            cursor: pointer;
+            color: #f1f1f1;
+            font-size: 12px;
+        }
+        
+        .wndCountImg {
+            display: inline-block;
+            font-size: 12px;
+            padding-right: 18px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+        
+        .wndCountText {
+            font-size: 12px;
+            padding-right: 5px;
+            cursor: pointer;
+            display: inline-block;
+            float: right;
+            margin-right: 12px;
+            margin-top: 5px;
+        }
+        
+        .playBackText {
+            font-size: 12px;
+            padding-right: 5px;
+            color: #f1f1f1
+        }
+        
+        .savePathText {
+            width: 55%;
+            float: left;
+            display: inline-block;
+            height: 24px;
+            line-height: 24px;
+            font-size: 12px;
+            color: #333;
+            border: 0;
+        }
+        
+        .savePath {
+            width: 40%;
+            float: left;
+            display: inline-block;
+            margin-left: 10px;
+            height: 24px;
+            line-height: 24px;
+            font-size: 12px;
+        }
+        
+        .activeWnd {
+            background: rgb(163, 178, 194);
+        }
+        
+        #record {
+            right: 90px;
+        }
+        
+        .cameralens img {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+        }
+        
+        .menuPic {
+            width: 15px;
+            height: auto;
+            margin-right: 10px;
+        }
+        
+        #menuUl li:hover {
+            background: #465C79
+        }
+        
+        #menuUl>li {
+            list-style: none;
+            height: 38px;
+            line-height: 38px;
+            width: 110px;
+        }
+        
+        .secondMenu {
+            height: 30px;
+            line-height: 30px;
+            width: 70px;
+            list-style: none;
+            padding: 0 5px;
+            text-align: center;
+        }
+        
+        .menuSpan {
+            padding: 10px;
+            width: 100%;
+            height: 38px;
+            line-height: 38px;
+        }
+        
+        .loading {
+            position: absolute;
+            z-index: 1000000;
+            background: #000;
+            opacity: 0.4;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            filter: alpha(opacity=40);
+            display: none;
+        }
+        
+        .loading div {
+            width: 140px;
+            padding: 15px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-left: -70px;
+            color: #ffffff;
+        }
+        
+        .loading div img {
+            float: left;
+            position: relative;
+            margin-right: 15px;
+        }
+        
+        .toTelBtn {
+            padding: 2px 3px;
+            float: right;
+            width: 82px;
+            color: #333;
+            font-size: 10px;
+            margin-right: 20px;
+        }
+        
+        input#node_id,
+        input#node_ip,
+        input#node_port,
+        input#node_username,
+        input#node_password,
+        input#node_channelnum,
+        input#node_devicecode,
+        input#node_headcontrol {
+            display: none;
+        }
+        
+        div#leftDiv {
+            display: none;
+        }
+        
+        div#rightDiv {
+            /*margin: 10px;
+            height: 500px;
+            width: 500px !important;
+            width: 99%;*/
+            width: 100% !important
+        }
+        
+        .menuSpan img {
+            width: 20px !important;
+            height: 20px !important;
+        }
+        .videobtn img {
+            width: 25px !important;
+            height: 25px !important;
+        }
+    </style>
+    <script type="text/javascript">
+        //window窗口调整    
+        function winResize() {
+            var winHeight = $(window).height();
+            var winWidth = $(window).width();
+            var toolbarHeight = $("#toolbar").outerHeight();
+            var searchToolbarHeight = $(".pannel-body").outerHeight();
+            $("#grid").bootstrapTable('resetView', {
+                height: (winHeight - toolbarHeight - searchToolbarHeight)
+            });
+        }
+
+        function getAccount() {
+            var parentCompanyMenu = document.getElementById("companyMenu");
+            var parentCompany = document.getElementById("company");
+            var parentOperate = document.getElementById("isOperateCompany");
+            var parentDangerLevel = document.getElementById("dangerLevelId");
+            var changeLang = document.getElementById('changeLang');
+            var account = {
+                getId: function(e) {
+                    var id = parentCompany.getAttribute('data-id')
+                    return id;
+                },
+                companyMenuQuery: parentCompanyMenu,
+                companyQuery: parentCompany,
+                operateQuery: parentOperate,
+                dangerLevelQuery: parentDangerLevel,
+                changeLang: changeLang
+            }
+            return account;
+        }
+
+        function search(a, account) {
+
+            $(account.companyMenuQuery).off('click').on("click", 'a', function(e) {
+                var companyId = account.getId(e);
+                loadFlag = true;
+                a(companyId);
+            })
+        }
+
+        function Loading() {
+            var load = '';
+            load = document.createElement('div');
+            var loadingCentent = document.createElement('div');
+            var img = document.createElement('img');
+            load.className = 'loading';
+            img.src = 'http://163.53.170.54:8101/IFCS/img/loading.gif';
+
+            if ($('.loading').length <= 0) {
+                $('body').append(load);
+                $('.loading').append(loadingCentent);
+                $(loadingCentent).append(img);
+                $(loadingCentent).append('请稍等……');
+            }
+            this.show = function() {
+                $(load).show();
+            };
+            this.hide = function() {
+                $(load).hide();
+            };
+            return this;
+        }
+    </script>
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <script type="text/javascript" src="http://118.126.95.57:8203/smallWindowVideo/js/ocxfun.js"></script>
+        <script type="text/javascript" src="http://163.53.170.54:8101/IFCS/My97DatePicker/WdatePicker.js"></script>
+        <script language="javascript" for="DPSDK_OCX" event="OnCorrectTalkParamEvent(nTalkType, nAudioType, nAudioBit, nSampleRate, nTransMode)">
+            var obj = document.getElementById("DPSDK_OCX");
+            var szCameraId=$("#szCameraId").val();
+            $("#selectDevType").val(nTalkType);
+            $("#selectAudioType").val(nAudioType);
+            $("#selectBitType").val(nAudioBit);
+            $("#selectSampleType").val(nSampleRate);
+            $("#selectTransType").val(nTransMode);
+            var returnCode=obj.DPSDK_StartTalk( szCameraId, nAudioType, nAudioBit, nSampleRate, nTalkType, nTransMode);
+            if(returnCode==0){
+                console.log(returnCode)
+                showCallRetInfo(returnCode,0,"语音对讲");
+                talking=true;
+                $("#talkimg").attr("src","http://163.53.170.54:8101/IFCS/img/toSpeakStop.png");
+                $("#VoiceIntercom").hide();
+            }else if(returnCode==17){
+
+            }else if(returnCode==18){
+                $("#videoStatus").html("语音对讲失败！此设备不支持对讲");
+                talking=false;
+                $("#talkimg").attr("src","http://163.53.170.54:8101/IFCS/img/toSpeak.png");
+            }else{ 
+                console.log(returnCode)
+                $("#videoStatus").html("语音对讲失败！错误码"+returnCode);
+                talking=false;
+                $("#talkimg").attr("src","http://163.53.170.54:8101/IFCS/img/toSpeak.png");
+            }
+        </script> 
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+            }
+            
+            body {
+                background-color: #000A13;
+                width: 100%;
+                height: 100%;
+                margin: 0px;
+                padding: 0px;
+            }
+            
+            #main {
+                /*margin: 15px 10px;
+                width: 99%;
+                height: 97%;
+                width: 600px;
+                position: absolute;
+                top: 50%;
+                /* height: 50%; 
+                left: 50%;
+                margin-left: -300px;
+                margin-top: -280px;*/
+                width: 100%;
+                height: 100%;
+            }
+            
+            .openVideo {
+                height: 25px;
+                line-height: 25px;
+                width: 100%;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                font-family: '微软雅黑 Regular', '微软雅黑';
+                font-style: normal;
+                font-weight: 400;
+                font-size: 14px;
+            }
+            
+            .openVideoInfo {
+                width: 40%;
+                display: inline-block;
+                color: #fff;
+            }
+            
+            .openVideoInfoText {
+                width: 90%;
+                padding-left: 15px;
+            }
+            
+            .videoButton {
+                height: 18px;
+                line-height: 18px;
+                margin-top: 3px;
+                background: #fff;
+                color: #000;
+                text-align: center;
+                font-size: 12px;
+                font-family: '微软雅黑 Regular', '微软雅黑';
+                position: absolute;
+                width: 30px;
+                cursor: pointer;
+            }
+            
+            .topmasking {
+                width: 100%;
+                height: 100%;
+                background: #cccccc;
+                opacity: 0.5;
+                filter: alpha(opacity=50);
+                position: fixed;
+                top: 0;
+                left: 0;
+                z-index: 1;
+                display: none;
+            }
+            
+            #backmodal {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: #000;
+                opacity: 0.5;
+                filter: alpha(opacity=50);
+                z-index: 100;
+                display: none;
+            }
+            
+            #bottomBtn img {
+                height: 28px;
+                margin-right: 30px;
+            }
+            
+            .videobtn {
+                position: absolute;
+                cursor: pointer;
+                top: 10px;
+            }
+            
+            #videoChannelList::-webkit-scrollbar {
+                width: 5px;
+            }
+            
+            #videoChannelList::-webkit-scrollbar-track {
+                background: #eee;
+                border-radius: 2px;
+            }
+            
+            #videoChannelList::-webkit-scrollbar-thumb {
+                width: 3px;
+                background: #aaa;
+                border-radius: 2px;
+            }
+            
+            #VoiceIntercom span {
+                height: 30px;
+                width: 210px;
+                display: block;
+                padding-top: 10px;
+                padding-left: 10px;
+                color: #f1f1f1;
+            }
+            
+            .selectOption {
+                width: 50%;
+                height: 22px;
+                font-size: 10px;
+                color: #333;
+            }
+            
+            .toTelBtn {
+                padding: 2px 3px;
+                float: right;
+                width: 82px;
+                color: #333;
+                font-size: 10px;
+                margin-right: 20px;
+            }
+            
+            #playBackDiv span {
+                height: 30px;
+                width: 210px;
+                display: block;
+                padding-top: 10px;
+                padding-left: 5px;
+            }
+            
+            #settingVideo span {
+                height: 30px;
+                line-height: 30px;
+                width: 250px;
+                display: block;
+                padding-left: 10px;
+                margin-top: 10px;
+                cursor: pointer;
+                color: #f1f1f1;
+                font-size: 12px;
+            }
+            
+            .playBackText {
+                font-size: 12px;
+                padding-right: 5px;
+                color: #f1f1f1
+            }
+            
+            .savePathText {
+                width: 55%;
+                float: left;
+                display: inline-block;
+                height: 24px;
+                line-height: 24px;
+                font-size: 12px;
+                color: #333;
+            }
+            
+            .savePath {
+                width: 40%;
+                float: left;
+                display: inline-block;
+                margin-left: 10px;
+                height: 24px;
+                line-height: 24px;
+                font-size: 12px;
+            }
+            .wndCountText {
+                font-size: 12px;
+                padding-right: 5px;
+                cursor: pointer
+            }
+            
+            .activeWnd {
+                background: rgb(163, 178, 194);
+            }
+            
+            #record {
+                right: 90px;
+            }
+            
+            .cameralens img {
+                display: inline-block;
+                width: 30px;
+                height: 30px;
+            }
+            
+            .menuPic {
+                width: 15px;
+                height: auto;
+                
+                float: left;
+                margin-left: 10px;
+                margin-top: 8px;
+            }
+            
+            #menuUl li:hover {
+                background: #465C79
+            }
+            
+            #menuUl>li {
+                list-style: none;
+                height: 38px;
+                line-height: 38px;
+            }
+            
+            .menuSpan {
+                padding: 10px;
+            }
+            
+            #handleRadio>span {
+                width: 20%;
+                display: inline-block;
+            }
+            
+            #faultRadio>span {
+                width: 20%;
+                display: inline-block;
+            }
+            
+            #localSolutionRadio>span {
+                width: 20%;
+                display: inline-block;
+            }
+            
+            .reasonBlock {
+                margin-bottom: 15px;
+                display: none;
+            }
+            
+            .faultBlock,
+            .localSolutionBlock {
+                display: none;
+            }
+            
+            /*最新添加样式20180616*/
+            
+            #setWndCountBtn {
+                background: url('http://118.126.95.57:8203/smallWindowVideo/img/zd-button-1.png') no-repeat center center;
+                background-size: 100%;
+                width: 110%;
+                margin-left: -10px;
+                border: 0;
+                padding: 10px 8px;
+            }
+            
+            #infoModalTitle {
+                border-bottom: 2px solid #4B4C4E;
+                padding: 0 20px;
+            }
+            
+            #deviceList {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+            
+            #videoListTitle {
+                box-sizing: border-box;
+                border-bottom: 1px solid #4B4C4E;
+            }
+            
+            #headControlDiv span {
+                height: 25px;
+                line-height: 25px;
+                width: 25px;
+                display: inline-block;
+                cursor: pointer;
+                position: absolute;
+            }
+        </style>
+        <script language="javascript" for="DPSDK_OCX" event="OnWndLBtnClick(nWndId, nWndNo, xPos, yPos)">
+                var rightMenu=document.getElementById("menu");
+                rightMenu.style.visibility="hidden"
+        </script>
+        <script language="javascript" for="DPSDK_OCX" event="OnAsyncLoginComplete(returnCode)">
+                if(returnCode==0)
+                {  
+                    var PlayOCX = document.getElementById("DPSDK_OCX");
+                    $("#messageInfo").html("异步登录成功");
+                    isReg=true;
+                    oldIP=streamServerIP;
+                    oldPort= streamServerPort;
+                    oldName=userName;
+                    oldpassword=password;
+                    var Code = PlayOCX.DPSDK_LoadDGroupInfo();
+                    showCallRetInfo(Code,0,"加载组织结构");
+                    ButtonStartRealplayVideo_onclick(szCameraId);
+                }else{
+                    $("#messageInfo").html("异步登录失败,错误码："+returnCode);
+                    isReg=false;
+                    $("#videoFailed").show();
+                    $("#videoNone").hide();
+                    $("#videoWait").hide();
+                }
+          </script>
+          
+        <script type="text/javascript">
+            var eventId;
+            var submitSuggestionData;
+            var direction;
+            var newStr;
+            var newStrEnd;
+            var disInterCom;
+
+            function showVedio() {
+                var data = {
+                    ip:$('#node_ip').val(),
+                    port:$('#node_port').val(),
+                    username:$('#node_username').val(),
+                    password:$('#node_password').val(),
+                    channelnum:$('#node_channelnum').val(),
+                    devicecode:$('#node_devicecode').val(),
+                    headcontrol:$('#node_headcontrol').val()
+
+                    //ip: '122.227.107.198',
+                    //port: '9000',
+                    //username: 'system',
+                    //password: 'aaaa1111',
+                    //channelnum: '0',
+                    //devicecode: '1000012',
+                    //headcontrol: 0
+                };
+                getVideoList(data);
+            }
+
+            function setCookie(name, value, exdays) {
+                var date = new Date();
+                date.setTime(date.getTime() + (exdays * 24 * 60 * 60 * 1000));
+                var expires = "expires=" + date.toUTCString();
+                document.cookie = "name=" + value + ";" + expires;
+            }
+
+            function getCookie(cookie_name) {
+                var allcookies = document.cookie;
+                return allcookies;
+            }
+
+            function pathText() {
+                var allPath = getCookie(name);
+                var cookie_start = allPath.indexOf("=");
+                var cookie_end = allPath.indexOf(",");
+                newStr = allPath.substring(cookie_start + 1, cookie_end);
+                newStrEnd = allPath.substring(cookie_end + 1, allPath.length);
+            }
+            pathText();
+
+            //日期选择
+            $(function() {
+                var account = new getAccount();
+                search(searchViedoTree, account);
+                $("#selectPicPath").val(newStr);
+                $("#selectRecordPath").val(newStrEnd);
+                windowWidth = $(window).width();
+                windowHeight = $(window).height();
+                var rightdiv = document.getElementById("rightDiv");
+                rightdiv.style.width = (windowWidth - parseInt($("#leftDiv").width()) - 60) + 'px';
+                var leftDivHeight = document.getElementById("leftDiv").clientHeight;
+                var videoTitleHeight = document.getElementById("videoListTitle").clientHeight;
+                $("#videoChannelList").height(leftDivHeight - videoTitleHeight - 25);
+                var InfoModalHeight = document.getElementById("InfoModal").clientHeight;
+                var infoModalTitleHeight = document.getElementById("infoModalTitle").clientHeight;
+                $("#videoPlay").height(InfoModalHeight - infoModalTitleHeight);
+                $(window).on("resize", function() {
+                    windowWidth = $(window).width();
+                    windowHeight = $(window).height();
+                    var rightdiv = document.getElementById("rightDiv");
+                    rightdiv.style.width = (windowWidth - parseInt($("#leftDiv").width()) - 60) + 'px';
+                    var leftDivHeight = document.getElementById("leftDiv").clientHeight;
+                    var videoTitleHeight = document.getElementById("videoListTitle").clientHeight;
+                    $("#videoChannelList").height(leftDivHeight - videoTitleHeight - 25);
+                    var InfoModalHeight = document.getElementById("InfoModal").clientHeight;
+                    var infoModalTitleHeight = document.getElementById("infoModalTitle").clientHeight;
+                    $("#videoPlay").height(InfoModalHeight - infoModalTitleHeight);
+                })
+                function searchViedoTree() {
+                    var account = new getAccount();
+                    var companyId = account.companyQuery.getAttribute("data-id");
+                    var IsOperateCompany = account.operateQuery.getAttribute("data-id");
+                    $.fn.zTree.init($("#videoChannelList"), getData(companyId, IsOperateCompany));
+                }
+
+                var channelTypeArr = [];
+                var firstChild;
+                var videoFlag = false
+                $(".videobtn").on("click", function(event) {
+                    event.stopPropagation();
+                    var index = $(this).index();
+                    if (index == 2) {
+                        $("#headControlDiv").toggle();
+                        $("#playBackDiv").hide();
+                        $("#setWndCountDiv").hide();
+                        $("#settingVideo").hide();
+                        $("#recordFormat").hide();
+                        $("#VoiceIntercom").hide();
+                    } else if (index == 3) {
+                        $("#playBackDiv").hide();
+                        $("#setWndCountDiv").toggle();
+                        $("#settingVideo").hide();
+                        $("#recordFormat").hide();
+                        $("#VoiceIntercom").hide();
+                        $("#headControlDiv").hide();
+
+                    } else if (index == 4) {
+                        $('#playBackDiv').toggle();
+                        $("#setWndCountDiv").hide();
+                        $("#settingVideo").hide();
+                        $("#recordFormat").hide();
+                        $("#VoiceIntercom").hide();
+                        $("#headControlDiv").hide();
+
+                    } else if (index == 5) {
+                        videoFlag = !videoFlag
+                        $('#playBackDiv').hide();
+                        $("#setWndCountDiv").hide();
+                        $("#settingVideo").hide();
+                        $("#recordFormat").hide();
+                            if(videoFlag) {
+                                
+                            }else {
+                                //alert("true")
+                                ButtonStopTalk_onclick(szCameraId);
+                            }
+                            //if (talking == false) {
+                            //    alert("false")
+                            //    ButtonStartTalk_onclick(szCameraId);
+                            //} else {
+                            //    
+                            //}
+                    } else if (index == 6) {
+                        $("#playBackDiv").hide();
+                        $("#setWndCountDiv").hide();
+                        $("#settingVideo").hide();
+                        $("#headControlDiv").hide();
+                        $("#recordFormat").hide();
+                        $("#VoiceIntercom").hide();
+                        ButtonCapturePictureByWndNo_onclick();
+                    } else if (index == 7) {
+                        $('#playBackDiv').hide();
+                        $("#setWndCountDiv").hide();
+                        $("#settingVideo").hide();
+                        $("#headControlDiv").hide();
+                        $("#VoiceIntercom").hide();
+                        var status = $(this).attr("recordStatus");
+                        if (status == "stopping") {
+                            $(this).find("img").attr("src", "http://118.126.95.57:8203/smallWindowVideo/img/local_video.png");
+                            ButtonStopRealRecordByWndNo_onclick();
+                            $(this).attr("recordStatus", "playing")
+                        } else {
+                            $("#recordFormat").toggle();
+                            $(".recordType").on("click", function() {
+                                var statusRecord = $("#record").attr("recordStatus");
+                                if (statusRecord == "playing") {
+                                    if ($(this).index() == 0) {
+                                        $("#recordFormat").toggle();
+                                        ButtonStartRealRecordByWndNo_onclick(0);
+                                    } else {
+                                        $("#recordFormat").toggle();
+                                        ButtonStartRealRecordByWndNo_onclick(1);
+                                    }
+                                }
+
+                            })
+                        }
+                    } else if (index == 8) {
+                        $('#playBackDiv').hide();
+                        $("#setWndCountDiv").hide();
+                        $("#settingVideo").toggle();
+                        $("#headControlDiv").hide();
+                        $("#recordFormat").hide();
+                        $("#VoiceIntercom").hide();
+                    }
+                });
+                
+            });
+           
+		
+        </script>
+    </head>
+
+    <body onload="init()" onunload="ButtonLogout_onclick()">
+        <input th:value="${id}" id="node_id" />
+        <input th:value="${ip}" id="node_ip" />
+        <input th:value="${port}" id="node_port" />
+        <input th:value="${username}" id="node_username" />
+        <input th:value="${password}" id="node_password" />
+        <input th:value="${channelnum}" id="node_channelnum" />
+        <input th:value="${devicecode}" id="node_devicecode" />
+        <input th:value="${headcontrol}" id="node_headcontrol" />
+        <!-- <p th:text="'ip: ' + ${ip}" id="node_ip"/>
+        <p th:text="'port: ' + ${port}" id="node_port" />
+        <p th:text="'username: ' + ${username}" id="node_username" />
+        <p th:text="'password: ' + ${password}" id="node_password"/>
+        <p th:text="'channelnum: ' + ${channelnum}" id="node_channelnum" />
+        <p th:text="'devicecode: ' + ${devicecode}" id="node_devicecode"/>
+        <p th:text="'headcontrol: ' + ${headcontrol}" id="node_headcontrol"/> -->
+        <div class="topmasking"></div>
+        <form id="DPSDKdownLoadFrom" method="post" style="display:none;">
+            <a href="#" name="DPSDK" class='edit downLoadBuild'></a>
+        </form>
+        <div id="main">
+            <div id="leftDiv" style="float:right;width:15%;min-width:300px;min-height:98%;position: relative;height:98%;margin-top:1%;margin:10px;background-color: #232728;opacity:0;">
+                <div id="deviceList" style="height:95%;width:100%;">
+                    <p id="videoListTitle" style="height:45px;line-height:45px;padding-left:3%;color:#fff !important;font-size:20px;font-family:'Unica One', sans-serif;"></p>
+                    <ul id="videoChannelList" class="ztree" style=" color: rgb(255, 255, 255); width: 90%; margin-left: 10%; height: 254px;">
+                        <li id="videoChannelList_1" class="level0" tabindex="0" hidefocus="true" treenode="">
+                            <span id="videoChannelList_1_switch" title="" class="button level0 switch roots_open" treenode_switch=""></span>
+                            <a id="videoChannelList_1_a" class="level0" treenode_a="" onclick="" target="_blank" style="color:#fff;" title="">
+                                <span id="videoChannelList_1_ico" title="" treenode_ico="" class="button companyChannels_ico_open" style=""></span>
+                                <span id="videoChannelList_1_span" class="node_name"></span>
+                            </a>
+                            <ul id="videoChannelList_1_ul" class="level0 line" style="display:block">
+                                <li id="videoChannelList_2" class="level1" tabindex="0" hidefocus="true" treenode="">
+                                    <span id="videoChannelList_2_switch" title="" class="button level1 switch center_open" treenode_switch=""></span>
+                                    <a id="videoChannelList_2_a" class="level1" treenode_a="" onclick="" target="_blank" style="color:#fff;" title="">
+                                        <span id="videoChannelList_2_ico" title="" treenode_ico="" class="button fireControl_ico_open" style=""></span>
+                                        <span id="videoChannelList_2_span" class="node_name"></span>
+                                    </a>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li id="videoChannelList_4" class="level1" tabindex="0" hidefocus="true" treenode="">
+                            <span id="videoChannelList_4_switch" title="" class="button level1 switch bottom_open" treenode_switch=""></span>
+                            <a id="videoChannelList_4_a" class="level1" treenode_a="" onclick="" target="_blank" style="color:#fff;" title="其他">
+                                <span id="videoChannelList_4_ico" title="" treenode_ico="" class="button  _ico_open" style=""></span>
+                                <span id="videoChannelList_4_span" class="node_name">其他</span>
+                            </a>
+                            <ul id="videoChannelList_4_ul" class="level1 " style="display:block">
+                                <li id="videoChannelList_5" class="level2" tabindex="0" hidefocus="true" treenode="">
+                                    <span id="videoChannelList_5_switch" title="" class="button level2 switch bottom_docu" treenode_switch=""></span>
+                                    <a id="videoChannelList_5_a" class="level2" treenode_a="" onclick="" target="_blank" style="color:#fff;" title="bbbb">
+                                        <span id="videoChannelList_5_ico" title="" treenode_ico="" class="button channelRight_ico_docu" style=""></span>
+                                        <span id="videoChannelList_5_span" class="node_name">11111111</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    </li>
+                    </ul>
+                </div>
+            </div>
+            <div id="rightDiv" style="position: relative;height:100%; ">
+                <div id="InfoModal" style="height:100%;width:100%;float:left;">
+                    <div id="infoModalTitle" style="height:45px;line-height:45px;font-size:20px;font-family:'Unica One', sans-serif;background: #232728 !important;color: #21a4dc !important">
+                        <span style="margin-left: 10px;display:inline-block; font-size: 14px; color: rgb(241, 241, 241);" th:text="${message}" id="node_message"></span>
+                        <span id="messageInfo" style="margin-left:0;width:150px;height:30px;font-size:12px;color:#f1f1f1">提示：视频播放器仅支持IE浏览器!</span>
+                        <span class="videobtn" id="headControl" style="right: 245px;" title="云台控制"><img src="http://118.126.95.57:8203/smallWindowVideo/img/video_control.png" style="width:25px;height:25px;"></span>
+                        <!-- <span class="videobtn" id="setWndCount" style="right:280px;" title="窗口分割"><img src="http://163.53.170.54:8101/IFCS/img/setWndCount.png" style="width:25px;height:25px;"></span> -->
+                        <span class="videobtn" id="setWndCount" style="right:200px;" title="窗口分割"><img src="http://118.126.95.57:8203/smallWindowVideo/img/segmentation .png" style="width:25px;height:25px;"></span>
+                        <!-- <span class="videobtn" id="playVideoBack" style="right:230px;" title="回放视频"><img src="http://163.53.170.54:8101/IFCS/img/playBack.png" style="width:23px;height:20px;"></span> -->
+                        <span class="videobtn" id="playVideoBack" style="right:155px;" title="回放视频"><img src="http://118.126.95.57:8203/smallWindowVideo/img//video_playback.png" style="width:23px;height:20px;"></span>
+                        <!-- <span class="videobtn" id="audioTel" style="right: 180px; cursor: default;" title="不支持语音对讲"><img id="talkimg" src="http://163.53.170.54:8101/IFCS/img/toSpeak.png" style="width:30px;height:27px;"></span> -->
+                        <span class="videobtn" id="audioTel" style="right: 155px; cursor: pointer;display:none;" title="不支持语音对讲"><img id="talkimg" src="" style="width:30px;height:27px;"></span>
+                        <!-- <span class="videobtn" id="CapturePicture" style="right:140px;" title="抓图"><img src="http://163.53.170.54:8101/IFCS/img/CapturePicture.png" style="width:25px;height:22px;"></span> -->
+                        <span class="videobtn" id="CapturePicture" style="right:110px;" title="抓图"><img src="http://118.126.95.57:8203/smallWindowVideo/img/screenshot.png" style="width:25px;height:22px;"></span>
+                        <!-- <span class="videobtn" id="record" recordstatus="playing" style="right:90px;" title="本地录像"><img id="recordImg" src="http://163.53.170.54:8101/IFCS/img/recordStart.png" style="width:25px;height:25px;"></span> -->
+                        <span class="videobtn" id="record" recordstatus="playing" style="right:65px;" title="本地录像"><img id="recordImg" src="http://118.126.95.57:8203/smallWindowVideo/img/local_video.png" style="width:25px;height:25px;"></span>
+                        <span class="videobtn" id="setting" style="right:20px;" title="设置"><img src="http://118.126.95.57:8203/smallWindowVideo/img/video_set.png" style="width:30px;height:30px;"></span>
+                    </div>
+                    <!-- 云台控制 -->
+                    <div id="headControlDiv" style="display:none;width: 215px; height: 300px; z-index: 240; background:#193564 url(http://118.126.95.57:8203/smallWindowVideo/img/headcontrolback.png) no-repeat;background-size:200px 200px;background-position:7px 10px;border:solid 1px rgba(102, 135, 207, 0.42);position:absolute;top:45px;right:270px;">
+                        <p id="directionDiv">
+                            <span class="direction" data-direction="5" title="左上" style="left:42px;top:55px;"><img src="http://118.126.95.57:8203/smallWindowVideo/img/leftUpControl.png"></span>
+                            <span class="direction" data-direction="1" title="向上" style="left:94px;top:27px;"><img src="http://118.126.95.57:8203/smallWindowVideo/img/upControl.png"></span>
+                            <span class="direction" data-direction="7" title="右上" style="left:151px;top:52px;"><img src="http://118.126.95.57:8203/smallWindowVideo/img/rightUpControl.png"></span>
+                            <span class="direction" data-direction="3" title="向左" style="left:19px;top:103px;"><img src="http://118.126.95.57:8203/smallWindowVideo/img/leftControl.png"></span>
+                            <span class="direction" data-direction="4" title="向右" style="left:175px;top:99px;"><img src="http://118.126.95.57:8203/smallWindowVideo/img/rightControl.png"></span>
+                            <span class="direction" data-direction="6" title="左下" style="left:49px;top:152px;"><img src="http://118.126.95.57:8203/smallWindowVideo/img/leftDownControl.png"></span>
+                            <span class="direction" data-direction="2" title="向下" style="left:100px;top:170px;"><img src="http://118.126.95.57:8203/smallWindowVideo/img/downControl.png"></span>
+                            <span class="direction" data-direction="8" title="右下" style="left:155px;top:146px;"><img src="http://118.126.95.57:8203/smallWindowVideo/img/rightDownControl.png"></span>
+                        </p>
+                        <p class="cameralensDiv">
+                            <span class="cameralens" data-camera="0" title="变倍+" style="left:26px;top:215px;"><img src="http://118.126.95.57:8203/smallWindowVideo/img/zoomEnlarge.png"></span>
+                            <span class="cameralens" data-camera="1" title="聚焦+" style="left:102px;top:219px;height:25px;width:25px;"><img src="http://118.126.95.57:8203/smallWindowVideo/img/focusEnlarge.png"></span>
+                            <span class="cameralens" data-camera="2" title="光圈+" style="left:173px;top:215px;"><img src="http://118.126.95.57:8203/smallWindowVideo/img/apertureEnlarge.png"></span>
+                            <span class="cameralens" data-camera="3" title="变倍-" style="left:28px;top:261px;"><img src="http://118.126.95.57:8203/smallWindowVideo/img/zoomReduce.png"></span>
+                            <span class="cameralens" data-camera="4" title="聚焦-" style="left:102px;top:261px;height:25px;width:25px;"><img src="http://118.126.95.57:8203/smallWindowVideo/img/focusReduce.png"></span>
+                            <span class="cameralens" data-camera="5" title="光圈-" style="left:173px;top:260px;"><img src="http://118.126.95.57:8203/smallWindowVideo/img/apertureReduce.png"></span>
+                        </p>
+                        <iframe id="iframe6" src="about:blank" frameBorder="0" marginheight="0" marginwidth="0" style="position:absolute;visibility:inherit;top:0px;left:0px;width:215px;height:300px;z-index:-3;filter:alpha(opacity=0);"></iframe>
+                    </div>
+                    <!-- 语音对讲 -->
+                    <div id="VoiceIntercom" style="display:none; padding-left: 10px; z-index: 210; background-color: rgb(212, 215, 222); border: 1px solid rgba(102, 135, 207, 0.419608); position: absolute; top: 101px; right: 80px;  background-position: initial initial; background-repeat: initial initial;">
+                        <span>
+                                <label style="font-size:12px;padding-right:5px;">对讲类型：</label>
+                                <select class="selectOption" id="selectDevType">
+                                <option value="2">2 通道</option>
+                                <option value="1">1 设备</option>
+                                </select>
+                        </span>
+                        <span>
+                                <label style="font-size:12px;padding-right:5px;">音频格式：</label>
+                                <select class="selectOption" id="selectAudioType">
+                                <option value="1">1 PCM</option>
+                                <option value="2">2 G711a</option>
+                                <option value="3">3 AMR</option>
+                                <option value="4">4 G711u</option>
+                                <option value="5">5 G726</option>
+                                <option value="6">6 AAC</option>
+                                <option value="7">7 G722</option>
+                                <option value="8">8 G711</option>
+                                </select>
+                        </span>
+                        <span>
+                                <label style="font-size:12px;padding-right:5px;">采样位数：</label>
+                                <select class="selectOption" id="selectBitType">
+                                <option value="8">8</option>
+                                <option value="16">16</option>
+                                </select>
+                            </span>
+                            <span>
+                                <label style="font-size:12px;padding-right:5px;">采样频率：</label>
+                                <select class="selectOption" id="selectSampleType">
+                                <option value="8000">8000</option>
+                                <option value="16000">16000</option>
+                                <option value="8192">8192</option>
+                                <option value="48000">48000</option>
+                                </select>
+                            </span>
+                            <span>
+                                <label style="font-size:12px;padding-right:5px;">传输类型：</label>
+                                <select class="selectOption" id="selectTransType">
+                                <option value="1">1 tcp</option>
+                                <option value="2">2 udp</option>
+                                </select>
+                            </span>
+                            <span style="height: 30px;width:100%;display:block;font-size:12px;">
+                            <input class="toTelBtn" type="button" id="ButtonStartTalk" value="打开语音对讲" style="margin-right:11px">
+                            </span>
+                            <iframe id="iframe4" src="about:blank" frameBorder="0" marginheight="0" marginwidth="0" style="padding-left:10px;position:absolute;visibility:inherit;top:0px;left:0px;width:221px;height:240px;z-index:-1;filter:alpha(opacity=0);"></iframe>
+                    </div>
+                    <!-- 鼠标右键菜单 -->
+                    <div id="menu" style="visibility:hidden;width: 110px;height: 150px;font-size:12px;z-index:300;background:#193564;border:solid 1px rgba(102, 135, 207, 0.42);position:absolute;left:0px;color: #f1f1f1;text-align: left;">
+                        <ul id="menuUl" style="list-style:none;height:102px;">
+                            <li class="noChild"><span class="menuSpan"><img class="menuPic" src="http://118.126.95.57:8203/smallWindowVideo/img/ZliveVideo.png">播放视频</span></li>
+                            <li class="noChild"><span class="menuSpan"><img class="menuPic" src="http://118.126.95.57:8203/smallWindowVideo/img/closeVideo.png">关闭视频</span></li>
+                            <li class="hasChild">
+                                <span class="menuSpan"><img class="menuPic" src="http://118.126.95.57:8203/smallWindowVideo/img/switch.png">切换码流</span>
+                                <ul id="secondUl" style="display:none;position: absolute;z-index:300;left: 110px;width:70px;top:76px;background: #193564;height:60px;">
+                                    <li class="secondMenu" style="padding:0;line-height:30px;">主码流</li>
+                                    <li class="secondMenu" style="padding:0;line-height:30px;">辅码流</li>
+                                    <iframe id="iframe11" src="about:blank" frameborder="0" marginheight="0" marginwidth="0" style="position:absolute;visibility:inherit;left:0px;width:70px;top:0px;background: #193564;height:60px;z-index:-9;filter:alpha(opacity=0);"></iframe>
+                                </ul>
+                            </li>
+                            <li class="noChild"><span class="menuSpan"><img class="menuPic" src="http://118.126.95.57:8203/smallWindowVideo/img/CapturePicture1.png">抓图</span></li>
+                        </ul>
+                        <iframe id="iframe10" src="about:blank" frameborder="0" marginheight="0" marginwidth="0" style="position:absolute;visibility:inherit;top:0px;left :0px;width:110px;height:150px;z-index:-9;filter:alpha(opacity=0);"></iframe>
+                    </div>
+                    <!-- 窗口分割 -->
+                    <div id="setWndCountDiv" style="display:none;width: 120px; height: 280px; z-index: 230; background:#193564;border:solid 1px rgba(102, 135, 207, 0.42);position:absolute;top:45px;right:200px;">
+                        <span class="activeWnd" data-count="1">
+                         <label class="wndCountImg"><img src="http://118.126.95.57:8203/smallWindowVideo/img/segmentation-1.png"></label>
+                         <label class="wndCountText">1分割</label>
+                     </span>
+                        <span data-count="4">
+                         <label class="wndCountImg"><img src="http://118.126.95.57:8203/smallWindowVideo/img/segmentation-4.png" style="vertical-align:middle;"></label>
+                         <label class="wndCountText">4分割</label>
+                     </span>
+                        <span data-count="6">
+                         <label class="wndCountImg"><img src="http://118.126.95.57:8203/smallWindowVideo/img/segmentation-6.png"></label>
+                         <label class="wndCountText">6分割</label>
+                     </span>
+                        <span data-count="8">
+                         <label class="wndCountImg"><img src="http://118.126.95.57:8203/smallWindowVideo/img/segmentation-8.png"></label>
+                         <label class="wndCountText">8分割</label>
+                     </span>
+                        <span data-count="16">
+                         <label class="wndCountImg"><img src="http://118.126.95.57:8203/smallWindowVideo/img/segmentation-16.png"></label>
+                         <label class="wndCountText">16分割</label>
+                     </span>
+                        <span data-count="36">
+                         <label class="wndCountImg"><img src="http://118.126.95.57:8203/smallWindowVideo/img/segmentation-36.png"></label>
+                         <label class="wndCountText">36分割</label>
+                     </span>
+                        <span data-count="64">
+                         <label class="wndCountImg"><img src="http://118.126.95.57:8203/smallWindowVideo/img/segmentation-64.png"></label>
+                         <label class="wndCountText">64分割</label>
+                     </span>
+                        <span style="height: 20px;width:100%;display:none;margin-top: 5px;">
+                         <input type="button" id="setWndCountBtn" style="padding:10px 8px;">
+                        </span>
+                        <iframe id="iframe6" src="about:blank" frameborder="0" marginheight="0" marginwidth="0" style="position:absolute;visibility:inherit;top:0px;left:0px;width:110px;height:280px;z-index:-3;filter:alpha(opacity=0);"></iframe>
+                    </div>
+                    <!-- 视频回放参数 -->
+                    <div id="playBackDiv" style="display:none;width:215px;z-index:220;background:#193564;border:solid 1px rgba(102, 135, 207, 0.42);position:absolute;top:45px;right:40px;">
+                        <span>
+                           <label class="playBackText">开始时间:</label>
+                           <input type="text" id="textStartTime" value="请选择开始时间" onfocus="WdatePicker({startDate:'%y-%M-01 00:00:00',dateFmt:'yyyy-MM-dd HH:mm:ss',maxDate:'%y-%M-%d',minDate:'2015-01-01 00:00:00',alwaysUseStartDate:true})" style="width:65%;height:22px;line-height:22px;font-size:12px;padding-left:5px;" readonly="">
+                        </span>
+                        <span>
+                            <label class="playBackText">结束时间:</label>
+                            <input id="textEndTime" type="text" name="" value="请选择结束时间" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',maxDate:'%y-%M-%d',minDate:'2015-01-01 00:00:00',alwaysUseStartDate:true})" style="width:65%;height:22px;line-height:22px;font-size:12px;padding-left:5px;" readonly="">
+                        </span>
+                        <span>
+                            <label class="playBackText">录像来源:</label>
+                            <select class="selectOption" id="selectRecordSource" style="width:50%;height:22px;font-size:12px;">
+                               <option value="3">平台录像</option>
+                               <option value="2">设备录像</option>
+                            </select>
+                        </span>
+                        <span style="height:26px;width:100%;display:block;padding-left:66%;padding-top:10px;font-size:10px;"><input type="button" id="startPlayBtn" value="开始回放" style="padding:2px 4px;"></span>
+                        <iframe id="iframe5" src="about:blank" frameborder="0" marginheight="0" marginwidth="0" style="position:absolute;visibility:inherit;top:0px;left :0px;width:214px;height:157px;z-index:-2;filter:alpha(opacity=0);"></iframe>
+                    </div>
+                    <!-- AVI格式录像 -->
+                    <div id="recordFormat" style="display:none;width: 150px;font-size:12px;color:#f1f1f1;height: 62px;padding:10px; z-index: 230; background:#193564;border:solid 1px rgba(102, 135, 207, 0.42);position:absolute;top:46px;right: 0px;">
+                        <span class="recordType" style="display:block;cursor: pointer;">
+                         <label style="margin-right:15px"><img src="http://118.126.95.57:8203/smallWindowVideo/img/aviRecord.png"></label>
+                         <label style="position:relative;top:-3px;">AVI格式录像</label>
+                     </span>
+                        <span class="recordType" style="display:block; margin-top:5px;cursor: pointer;">
+                         <label style="margin-right:15px"><img src="http://118.126.95.57:8203/smallWindowVideo/img/davRecord.png" style="vertical-align:middle;"></label>
+                         <label style="position:relative;top:2px;">DAV格式录像</label>
+                     </span>
+                        <iframe id="iframe8" src="about:blank" frameborder="0" marginheight="0" marginwidth="0" style="position:absolute;visibility:inherit;top:0px;left:0px;width:140px;height:62px;z-index:-3;filter:alpha(opacity=0);"></iframe>
+                    </div>
+                    <!-- 抓图 录像存放路径-->
+                    <div id="settingVideo" style="display:none;width:270px;height:180px;z-index:280;background:#193564;border:solid 1px rgba(102, 135, 207, 0.42);position:absolute;top:46px;right:0px;">
+                        <p style="vertical-align:middle;margin-left:15px;">
+                            <input type="checkbox" checked="" value="规则线" style="vertical-align:middle;width:20px" id="rugularLineInput">
+                            <span style="vertical-align:middle;font-family:tahoma;margin-top:0px;width:80px;display:inline-block;">规则线</span>
+                            <input type="checkbox" checked="" value="目标框" style="vertical-align:middle;width:20px" id="targetFrameInput">
+                            <span style="vertical-align:middle;font-family:tahoma;margin-top:0px;width:80px;display:inline-block;">目标框</span>
+                        </p>
+                        <span>
+                        <label class="savePath">抓图存储路径:</label>
+                        <input class="savePathText" type="text" id="selectPicPath">
+                     </span>
+                        <span>
+                        <label class="savePath">录像存储路径:</label>
+                        <input class="savePathText" type="text" id="selectRecordPath">
+                     </span>
+                        <span style="height:20px;line-height:20px;padding-left:15px;color:#f1f1f1;font-size:10px;">请输入完整路径，示例：C:\\DPSDK</span>
+                        <span style="height: 30px;width:100%;display:block;font-size:12px;">
+                        <input id="savePathBtn" type="button" value="保存" style="width:60px;height:24px;line-height:24px;font-size:10px;color:#333;float:right;margin-right:20px;">
+                     </span>
+                        <iframe id="iframe9" src="about:blank" frameborder="0" marginheight="0" marginwidth="0" style="position:absolute;visibility:inherit;top:0px;left :0px;width:270px;height:180px;z-index:-9;filter:alpha(opacity=0);"></iframe>
+                    </div>
+                <!-- 语音部分 -->
+                    <!-- <div id="videoifShow" style="width:57.5%;height:350px;position:absolute;left:35%;z-index:15;margin:0px 0px 0px 27px;background:#5c6576 url(http://163.53.170.54:8101/IFCS//img/videobg.png) no-repeat center;">
+                        <div id="objectStatus" style="width:100%;height:100%;position:absolute;top:0px;left:0px;z-index:15;background:#5c6576 url(http://163.53.170.54:8101/IFCS//img/videobg.png) no-repeat center;">
+                            <object id="DPSDK_OCX" classid="CLSID:D3E383B6-765D-448D-9476-DFD8B499926D" style="width:100%;height:100%;magin:0px;padding:0px;" codebase="DpsdkOcx.cab#version=1.0.0.0"></object>
+                        </div>
+                        <div id="videoWait" style="width:100%;height:100%;z-index:100;position:absolute;top:0px;background:#5c6576 url(http://163.53.170.54:8101/IFCS//img/videobg.png) no-repeat center;left:0px;">
+                            <iframe id="iframe3" src="about:blank" frameBorder="0"  width="100%" height="100%" style="position:absolute;visibility:inherit;top:0px;height:100%;width:100%;z-index:-1;filter:alpha(opacity=0);"></iframe>
+                        </div>  
+                        <div id="videoFailed" style="display:none;width: 200px;height:50px;z-index: 275;position:absolute;top:50%;background:#5c6576 url(http://163.53.170.54:8101/IFCS//img/videofailed.png) no-repeat center;left: 50%;margin-left:-100px;margin-top:-25px;">
+                            <iframe id="iframe7" src="about:blank" frameBorder="0"  width="100%" height="100%" style="position:absolute;visibility:inherit;top:0px;height:100%;width:100%;z-index:-1;filter:alpha(opacity=0);"></iframe>
+                        </div>
+                        <div style="margin-left: 5%;height:30px;width:90%;float:left;position:absolute;top:350px;">
+                            <p id="videoStatus" style="margin:0 0 5px 0"></p>
+                        </div>
+                    </div>
+                    <div  id="videoNoneInfo" style="margin-left: 5%;display:none;height:300px;line-height:300px;width:90%;float:left;text-align:center;">
+                        <p id="videoInfotitle">视频不存在，请配置相关视频!</p>
+                    </div> -->
+
+                    <p id="videoPlay" style="width: 100%; z-index: 99; height: 269px;"><object id="DPSDK_OCX" classid="CLSID:D3E383B6-765D-448D-9476-DFD8B499926D" style="width:100%;height:100%;magin:0px;padding:0px;" codebase="DpsdkOcx.cab#version=1.0.0.0"></object></p>
+                    <div id="videoWait" style="width:100%;height:94%;z-index:100;position:absolute;top: 45px;background:#5c6576 url(http://163.53.170.54:8101/IFCS//img/videoWait.png) no-repeat center;">
+                        <iframe id="iframe3" src="about:blank" frameborder="0" style="position:absolute;visibility:inherit;top:0px;height:100%;width:100%;z-index:-1;filter:alpha(opacity=0);"></iframe>
+                    </div>
+                    <div id="videoNone" style="display:none;width:100%;height:94%;z-index:100;position:absolute;top: 45px;background:#5c6576 url(http://163.53.170.54:8101/IFCS//img/videoNone.png) no-repeat center;">
+                        <iframe id="iframe8" src="about:blank" frameborder="0" width="100%" height="100%" style="position:absolute;visibility:inherit;top:0px;height:100%;width:100%;z-index:-1;filter:alpha(opacity=0);"></iframe>
+                    </div>
+                    <div id="videoFailed" style="display:none;width:200px;height: 7%;z-index:100;position:absolute;top: 58%;background:#5c6576 url(http://163.53.170.54:8101/IFCS//img/videofailed.png) no-repeat center;left:45%;">
+                        <iframe id="iframe7" src="about:blank" frameborder="0" width="100%" height="100%" style="position:absolute;visibility:inherit;top:0px;height:100%;width:100%;z-index:-1;filter:alpha(opacity=0);"></iframe>
+                    </div>
+                </div>
+                <!-- <input id="szCameraId" type="hidden"> -->
+
+            </div>
+        </div>
+        </div>
+    </body>
+    <script type="text/javascript">
+        var container=document.getElementById("videoPlay");
+        container.oncontextmenu=function(e){
+            var container=document.getElementById("videoPlay");
+            var rightMenu=document.getElementById("menu");
+            var e=e||window.event;
+            var rightedge=container.clientWidth-e.clientX;
+            var bottomedge=container.clientHeight-e.clientY;
+            if(rightedge<rightMenu.offsetWidth){
+                rightMenu.style.left=container.scrollLeft+e.clientX-menu.offsetWidth-100+"px";
+            }else{
+                rightMenu.style.left=container.scrollLeft+e.clientX-100+"px";
+            }
+            if(bottomedge<rightMenu.offsetHeight){
+                rightMenu.style.top=container.scrollTop+e.clientY-menu.offsetHeight+"px";
+            }else{
+                rightMenu.style.top=container.scrollTop+e.clientY-50+"px";
+            }
+            
+            rightMenu.style.visibility="visible";
+        } 
+        container.onclick=function(e){
+            var e=e||window.event;
+            e.cancelBubble=true;
+        }
+    </script>
+    <script type="text/javascript" src="http://118.126.95.57:8203/smallWindowVideo/js/publicVideo.js"></script>
+    <script>
+        $(function() {
+            setTimeout("showVedio()", 1000);
+             //判断是否安装DPSDK_OCX插件
+             function hasIEPlugin(name)
+             {
+                 try
+                 {
+                     var comActiveX = new ActiveXObject(name);  
+                     delete comActiveX;
+                     return true;
+                 }
+                 catch(e)
+                 {
+                     return false;   
+                 }
+                 
+              }
+             var userAgent=navigator.userAgent;
+             var hasPlugin = hasIEPlugin('DPSDK_OCX.DPSDK_OCXCtrl.1');
+             if(userAgent.indexOf("Firefox")>-1||userAgent.indexOf("Chrome")>-1){
+                 $("#messageInfo").html("视频暂只支持IE浏览器，请切换至IE浏览器查看视频");
+                 
+             }else if(true == hasPlugin){
+                 $("#messageInfo").css("display","inline-block");
+                 $("#infoModalTitle").css("display","block");
+                 
+             }else{
+                 var con=confirm("您当前未安装视频播放插件，是否立即下载安装？")
+                 if(con==true){
+                     var ieVersion=window.navigator.platform;
+                     if(ieVersion.indexOf("32")!=-1){
+                         var actionUrl = "http://118.126.95.57:8203/plugin/DPSDK_OCX_Win32.rar"
+                     }else if(ieVersion.indexOf("64")>=0){
+                         var actionUrl = "http://118.126.95.57:8203/plugin/DPSDK_OCX_Win64.rar"
+                     }
+                     $("#DPSDKdownLoadFrom").prop("action", actionUrl).submit();
+                 }else{
+                     $("#messageInfo").html("提示：无法查看视频，请安装相关控件!");
+                 }
+             }
+        });
+    </script>
+
+</html>

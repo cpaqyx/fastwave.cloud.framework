@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="fastwave.service.admin.common.dao.CommonDao">
+
+    <select id="checkDuplicate" parameterType="map" resultType="int">
+        select count(*) from ${tableName}
+        where ${fieldName} = #{value}
+        and del_flag = '0'
+        <if test="id != null and id != ''">
+            and id != #{id}
+        </if>
+        <if test="customerId != null and customerId != ''">
+            and customer_id = #{customerId}
+        </if>
+        <if test="unitId != null and unitId != ''">
+            and unit_id = #{unitId}
+        </if>
+        <if test="pid != null and pid != ''">
+            and pid = #{pid}
+        </if>
+    </select>
+
+</mapper>

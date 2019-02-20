@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="fastwave.service.admin.config.dao.DictDao">
+
+    <resultMap type="fastwave.service.admin.config.entity.Dict" id="dictResultMap">
+        <id column="id" property="id"/>
+        <result column="name"  property="name"/>
+        <result column="value"  property="value"/>
+        <result column="type"  property="type"/>
+        <result column="description"  property="description"/>
+        <result column="sort"  property="sort"/>
+        <result column="parent_id"  property="parentId"/>
+        <result column="create_by"  property="createBy"/>
+        <result column="create_date"  property="createDate"/>
+        <result column="update_by"  property="updateBy"/>
+        <result column="update_date"  property="updateDate"/>
+        <result column="remarks"  property="remarks"/>
+        <result column="del_flag"  property="delFlag"/>
+        <result column="code"  property="code"/>
+        <result column="customer_id"  property="customerId"/>
+    </resultMap>
+    
+	<select id="get" resultType="fastwave.service.admin.config.entity.Dict">
+		select `id`,`name`,`value`,`type`,`description`,`sort`,`parent_id`,`create_by`,`create_date`,`update_by`,`update_date`,`remarks`,`del_flag`,customer_id from admin_config_dict where id = #{id}
+	</select>
+
+    <select id="getByName" resultType="fastwave.service.admin.config.entity.Dict">
+		select * from admin_config_dict where del_flag = '0' and `name` = #{name}
+	</select>
+
+	<select id="list" resultType="fastwave.service.admin.config.entity.Dict">
+		select `id`,`name`,`value`,`type`,`description`,`sort`,`parent_id`,`create_by`,`create_date`,`update_by`,`update_date`,`remarks`,`del_flag`,customer_id from admin_config_dict
+        <where>  
+		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  <if test="name != null and name != ''"> and name = #{name} </if>
+		  <if test="value != null and value != ''"> and value = #{value} </if>
+		  <if test="type != null and type != ''"> and type = #{type} </if>
+		  <if test="description != null and description != ''"> and description = #{description} </if>
+		  <if test="sort != null and sort != ''"> and sort = #{sort} </if>
+		  <if test="parentId != null and parentId != ''"> and parent_id = #{parentId} </if>
+		  <if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+		  <if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+		  <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy} </if>
+		  <if test="updateDate != null and updateDate != ''"> and update_date = #{updateDate} </if>
+		  <if test="remarks != null and remarks != ''"> and remarks = #{remarks} </if>
+		  <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+		  <if test="customerId != null and customerId != ''"> and customer_id = #{customerId} </if>
+ 		  <if test="delFlag == null"> and del_flag = 0 </if>
+		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+		
+ 	<select id="count" resultType="int">
+		select count(1) from admin_config_dict
+		 <where> 1=1
+		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  <if test="name != null and name != ''"> and name = #{name} </if>
+		  <if test="parentId != null and parentId != ''"> and parent_id = #{parentId} </if>
+		  and del_flag = 0
+		</where>
+	</select>
+	
+	<select id="countExcelSelf" resultType="int">
+		select count(1) from admin_config_dict
+		<where>  1=1
+		  <if test="id != null and id != ''"> and id != #{id} </if>
+		  <if test="name != null and name != ''"> and name = #{name} </if>
+		  <if test="parentId != null and parentId != ''"> and parent_id = #{parentId} </if>
+		  and del_flag = 0
+		</where>
+	</select>
+	
+	<select id="countParse" resultType="int">
+		select count(1) from admin_config_dict where parent_id = 0 and  del_flag = 0
+	</select>
+	 
+	<insert id="save" parameterType="fastwave.service.admin.config.entity.Dict" useGeneratedKeys="true" keyProperty="id">
+		insert into admin_config_dict
+		(
+			`name`, 
+			`value`, 
+			`type`, 
+			`description`, 
+			`sort`, 
+			`parent_id`, 
+			`create_by`, 
+			`create_date`, 
+			`update_by`, 
+			`update_date`, 
+			`remarks`, 
+			`del_flag`
+		)
+		values
+		(
+			#{name}, 
+			#{value}, 
+			#{type}, 
+			#{description}, 
+			#{sort}, 
+			#{parentId}, 
+			#{createBy}, 
+			#{createDate}, 
+			#{updateBy}, 
+			#{updateDate}, 
+			#{remarks}, 
+			#{delFlag}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="fastwave.service.admin.config.entity.Dict">
+		update admin_config_dict 
+		<set>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="value != null">`value` = #{value}, </if>
+			<if test="type != null">`type` = #{type}, </if>
+			<if test="description != null">`description` = #{description}, </if>
+			<if test="sort != null">`sort` = #{sort}, </if>
+			<if test="parentId != null">`parent_id` = #{parentId}, </if>
+			<if test="createBy != null">`create_by` = #{createBy}, </if>
+			<if test="createDate != null">`create_date` = #{createDate}, </if>
+			<if test="updateBy != null">`update_by` = #{updateBy}, </if>
+			<if test="updateDate != null">`update_date` = #{updateDate}, </if>
+			<if test="remarks != null">`remarks` = #{remarks}, </if>
+			<if test="delFlag != null">`del_flag` = #{delFlag}</if>
+			<if test="customerId != null">`customer_id` = #{customerId}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<update id="remove">
+		update admin_config_dict 
+		<set>
+          `del_flag`=1
+		</set>
+		where id in 
+		<foreach item="id" collection="list" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</update>
+	
+		<select id="listType" resultType="fastwave.service.admin.config.entity.Dict">
+		select distinct `type` , `description` from admin_config_dict
+	</select>
+	
+	<select id="ListDictItems" resultType="fastwave.lib.common.entity.DictTypeEntity" parameterType="fastwave.service.admin.config.entity.Dict" >
+		SELECT `id` AS VALUE , `name` AS title, `parent_id` AS parentId,`type` AS type FROM
+		(
+		 SELECT `id`, `name`, `parent_id` , sort ,type FROM admin_config_dict 
+		 <where>
+		  <if test="type != null and type != ''"> and type = #{type} </if>
+		  <if test="parentId != null and parentId != ''"> and parent_id = #{parentId} </if>
+		  <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+ 		  <if test="delFlag == null"> and del_flag = 0 </if>
+ 		  AND parent_id > 0
+ 		  )T
+		</where>
+		ORDER BY 'sort'  
+	</select>
+	
+	<!-- 次级菜单字典类 ，后面若使用可以直接调用-->
+	<select id="ListDictItems_ref" resultType="fastwave.lib.common.entity.DictTypeEntity" parameterType="fastwave.service.admin.config.entity.Dict" >
+		SELECT `id` AS VALUE , `name` AS title, `parent_id` AS parentId,`type` AS type FROM
+		(
+		 SELECT `id`, `name`, `parent_id` , sort ,type FROM admin_config_dict 
+		 <where>
+		  <if test="type != null and type != ''"> and type = #{type} </if>
+		  <if test="parentId != null and parentId != ''"> and parent_id = #{parentId} </if>
+		  <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+ 		  <if test="delFlag == null"> and del_flag = 0 </if>
+ 		  AND parent_id > 0
+		</where>
+		UNION ALL 
+		SELECT `id`  , `name` , `parent_id`, sort,type FROM admin_config_dict WHERE parent_id IN (SELECT id FROM admin_config_dict 
+		<where>
+		  <if test="type != null and type != ''"> and type = #{type} </if>
+		  <if test="parentId != null and parentId != ''"> and parent_id = #{parentId} </if>
+		  <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+ 		  <if test="delFlag == null"> and del_flag = 0 </if>
+ 		  AND parent_id > 0
+		</where>
+		 AND del_flag = 0) 
+		)T
+		ORDER BY 'sort'  
+	</select>
+	
+	<select id="ListDictParents" resultType="fastwave.lib.common.entity.DictTypeEntity" parameterType="fastwave.service.admin.config.entity.Dict" >
+		SELECT  `id` as value , `name` as title,  FROM admin_config_dict
+		<where>  
+			  and parent_id = #{parentId}
+			 <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+             <if test="delFlag == null"> and del_flag = 0 </if>
+		</where>
+		order by 'sort'
+	</select>
+	
+	   <select id="treelist" resultType="java.util.Map">
+        select id,name as name,parent_id,type from admin_config_dict
+        where del_flag = '0'
+    </select>
+	
+	<select id="childMaxCode" resultType="java.lang.String">
+		select max( `code` )
+		from admin_config_dict
+		where customer_id = #{customerId} and parent_id = #{parentId}
+	</select>
+</mapper>
