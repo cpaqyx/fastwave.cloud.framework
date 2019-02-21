@@ -17,9 +17,7 @@ import fastwave.lib.common.entity.DictTypeEntity;
  * 字典表
  * 
  * @author fastwave.developer
- * @date 2018-05-28 15:21:37
- * @Copyright: 2018 fastwave. All rights reserved. 
- * 注意：本内容仅限于信翰创武汉物联科技有限公司内部传阅，禁止外泄以及用于其他的商业目
+ * @date 
  */
 @Service
 public class DictServiceImpl extends BaseService implements DictService {
