@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="fastwave.service.auth.user.dao.CustomerDao">
+
+    <resultMap type="fastwave.service.auth.user.entity.Customer" id="adminCustomerCustomerResultMap">
+        <id column="id" property="id"/>
+        <result column="customer_name"  property="customerName"/>
+        <result column="data_mode"  property="dataMode"/>
+        <result column="district_code"  property="districtCode"/>
+        <result column="contact_person"  property="contactPerson"/>
+        <result column="contact_tel"  property="contactTel"/>
+        <result column="license"  property="license"/>
+        <result column="expire_date"  property="expireDate"/>
+    </resultMap>
+    
+	<select id="get" resultType="fastwave.service.auth.user.entity.Customer">
+		select `id`,`customer_name`,`data_mode`,`district_code`,`contact_person`,`contact_tel`,`license`,`expire_date` from admin_customer_customer where id = #{id}
+	</select>
+
+</mapper>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="fastwave.service.auth.user.dao.RoleResourceDao">
+
+    <resultMap type="fastwave.service.auth.user.entity.RoleResource" id="roleResourceResultMap">
+        <id column="id" property="id"/>
+        <result column="role_id"  property="roleId"/>
+        <result column="resource_id"  property="resourceId"/>
+        <result column="create_by"  property="createBy"/>
+        <result column="create_date"  property="createDate"/>
+    </resultMap>
+    
+	<select id="get" resultType="fastwave.service.auth.user.entity.RoleResource">
+		select `id`,`role_id`,`resource_id`,`create_by`,`create_date` from admin_auth_role_resource where id = #{id}
+	</select>
+
+	<select id="list" resultType="fastwave.service.auth.user.entity.RoleResource">
+		select `id`,`role_id`,`resource_id`,`create_by`,`create_date` from admin_auth_role_resource
+        <where>  
+		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  <if test="roleId != null and roleId != ''"> and role_id = #{roleId} </if>
+		  <if test="resourceId != null and resourceId != ''"> and resource_id = #{resourceId} </if>
+		  <if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+		  <if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+		
+ 	<select id="count" resultType="int">
+		select count(*) from admin_auth_role_resource
+		 <where>  
+		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  <if test="roleId != null and roleId != ''"> and role_id = #{roleId} </if>
+		  <if test="resourceId != null and resourceId != ''"> and resource_id = #{resourceId} </if>
+		  <if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+		  <if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+		</where>
+	</select>
+	 
+	<insert id="save" parameterType="fastwave.service.auth.user.entity.RoleResource" useGeneratedKeys="true" keyProperty="id">
+		insert into admin_auth_role_resource
+		(
+			`role_id`, 
+			`resource_id`, 
+			`create_by`, 
+			`create_date`
+		)
+		values
+		(
+			#{roleId}, 
+			#{resourceId}, 
+			#{createBy}, 
+			#{createDate}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="fastwave.service.auth.user.entity.RoleResource">
+		update admin_auth_role_resource 
+		<set>
+			<if test="roleId != null">`role_id` = #{roleId}, </if>
+			<if test="resourceId != null">`resource_id` = #{resourceId}, </if>
+			<if test="createBy != null">`create_by` = #{createBy}, </if>
+			<if test="createDate != null">`create_date` = #{createDate}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<update id="remove">
+		update admin_auth_role_resource 
+		<set>
+          `del_flag`=1
+		</set>
+		where id in 
+		<foreach item="id" collection="list" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</update>
+	
+	<select id="listResource" resultType="fastwave.service.auth.user.entity.Resource">
+		select a.*,b.* from admin_auth_role_resource  as a
+		LEFT JOIN admin_auth_resource as b
+		ON b.id = a. resource_id
+		WHERE
+		a.role_id  = #{roleid}
+	</select>
+</mapper>

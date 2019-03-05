@@ -1,0 +1,72 @@
+server:
+  session-timeout: 1800
+  port: 8763
+#    uri-encoding: utf-8
+security:
+  basic:
+    enabled: false
+spring:
+  thymeleaf:
+    mode: LEGACYHTML5
+    cache: false
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  profiles: 
+    active: dev
+  http:
+    multipart:
+      max-file-size: 30Mb
+      max-request-size: 30Mb
+  devtools:
+    restart:
+      enabled: true    
+  application:
+    name: fastwave-service-auth
+  
+mybatis: 
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: true #配置的缓存的全局开关  
+    lazyLoadingEnabled: true #延时加载的开关  
+    multipleResultSetsEnabled: true #开启的话，延时加载一个属性时会加载该对象全部属性，否则按需加载属性  
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #打印sql语句,调试用  
+  mapper-locations: mybatis/**/*Mapper.xml
+  typeAliasesPackage: fastwave.**.domain
+  global-config:  
+    id-type: 3  #1:数据库ID自增   2:用户输入id   3:全局唯一id(IdWorker)   4:全局唯一ID(uuid)  
+    db-column-underline: false  
+    refresh-mapper: true
+
+cacheType: ehcache
+logging:
+  level:
+    root: INFO
+    org.hibernate: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.hibernate.type.descriptor.sql.BasicExtractor: TRACE
+    com.itmuch: DEBUG
+eureka:
+  client:
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://10.101.43.197:8761/eureka
+      #defaultZone: http://peer1:8761/eureka/,http://peer2:8762/eureka,http://peer3:8763/eureka
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.cloud.client.ipAddress}:${spring.application.instance_id:${server.port}}
+    metadata-map:
+      zone: ABC      # eureka可以理解的元数据
+      lilizhou: BBC  # 不会影响客户端行为
+    lease-renewal-interval-in-seconds: 5
+    
+web: 
+  upload-path: /usr/local/sinhic/upload
+  front-path: /usr/local/sinhic/front
+  upload-ip: 10.101.43.125
+  port: 8100
+#  upload-path: e:/myfile/upload
+#  front-path: e:/myfile/front
+#  upload-ip: 10.101.43.171
+#  port: 8100 

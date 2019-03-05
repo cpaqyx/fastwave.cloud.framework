@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="fastwave.service.auth.user.dao.UserDao">
+
+    <resultMap type="fastwave.service.auth.user.entity.User" id="userResultMap">
+        <id column="id" property="id"/>
+        <result column="customer_id"  property="customerId"/>
+        <result column="user_name"  property="userName"/>
+        <result column="user_account"  property="userAccount"/>
+        <result column="user_password"  property="userPassword"/>
+        <result column="user_type"  property="userType"/>
+        <result column="user_email"  property="userEmail"/>
+        <result column="user_mobile"  property="userMobile"/>
+        <result column="user_idcard"  property="userIdcard"/>
+        <result column="user_pic"  property="userPic"/>
+        <result column="last_login_time"  property="lastLoginTime"/>
+        <result column="user_status"  property="userStatus"/>
+        <result column="unit_id"  property="unitId"/>
+        <result column="dept_id"  property="deptId"/>
+        <result column="create_by"  property="createBy"/>
+        <result column="create_date"  property="createDate"/>
+        <result column="update_by"  property="updateBy"/>
+        <result column="update_date"  property="updateDate"/>
+        <result column="del_flag"  property="delFlag"/>
+    </resultMap>
+    
+	<select id="get" resultType="fastwave.service.auth.user.entity.User">
+		select `id`,`customer_id`,`user_name`,`user_account`,`user_password`,`user_type`,`user_email`,`user_mobile`,`user_idcard`,`user_pic`,`last_login_time`,`user_status`,`monitor_id`,`unit_id`,`dept_id`,`create_by`,`create_date`,`update_by`,`update_date`,`del_flag` from admin_auth_user
+	</select>
+     
+	<select id="list" resultType="fastwave.service.auth.user.entity.User">
+       SELECT a.`id`,a.`customer_id`,a.`user_name`,a.`user_account`,a.`user_password`,a.`user_type`,a.`user_email`,a.`user_mobile`,a.`user_idcard`,a.`user_pic`,a.`last_login_time`,a.`user_status`,a.`monitor_id`,a.`unit_id`,a.`dept_id`,a.`create_by`,a.`create_date`,a.`update_by`,a.`update_date`,a.`del_flag` ,a.`fire_brigade_id`, c.`monitor_name`,c.coordinate as monitorcoordinate FROM admin_auth_user a 
+       LEFT JOIN `admin_auth_monitor` c ON a.`monitor_id`=c.`id`
+        <where>  
+		  <if test="id != null and id != ''"> and a.id = #{id} </if>
+		  <if test="customerId != null and customerId != ''"> and a.customer_id = #{customerId} </if>
+		  <if test="userName != null and userName != ''"> and a.user_name = #{userName} </if>
+		  <if test="userAccount != null and userAccount != ''"> and a.user_account = #{userAccount} </if>
+		  <if test="userPassword != null and userPassword != ''"> and a.user_password = #{userPassword} </if>
+		  <if test="userType != null and userType != ''"> and a.user_type = #{userType} </if>
+		  <if test="userEmail != null and userEmail != ''"> and a.user_email = #{userEmail} </if>
+		  <if test="userMobile != null and userMobile != ''"> and a.user_mobile = #{userMobile} </if>
+		  <if test="userIdcard != null and userIdcard != ''"> and a.user_idcard = #{userIdcard} </if>
+		  <if test="userPic != null and userPic != ''"> and a.user_pic = #{userPic} </if>
+		  <if test="lastLoginTime != null and lastLoginTime != ''"> and a.last_login_time = #{lastLoginTime} </if>
+		  <if test="userStatus != null and userStatus != ''"> and a.user_status = #{userStatus} </if>
+		  <if test="unitId != null and unitId != ''"> and a.unit_id = #{unitId} </if>
+		  <if test="deptId != null and deptId != ''"> and a.dept_id = #{deptId} </if>
+		  <if test="createBy != null and createBy != ''"> and a.create_by = #{createBy} </if>
+		  <if test="createDate != null and createDate != ''"> and a.create_date = #{createDate} </if>
+		  <if test="updateBy != null and updateBy != ''"> and a.update_by = #{updateBy} </if>
+		  <if test="updateDate != null and updateDate != ''"> and a.update_date = #{updateDate} </if>
+		  <if test="delFlag != null and delFlag != ''"> and a.del_flag = #{delFlag} </if>
+		  <if test="delFlag == null"> and a.del_flag = 0 </if>
+		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+	<select id="getCustomerCoordinate" resultType="java.util.Map">
+		select coordinate from admin_auth_monitor
+		<where>1=1
+		  <if test="customerId != null and customerId != ''">and customer_id = #{customerId} </if>
+		  <if test="customerId == null"> and 1 > 2 </if>
+		  <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+		  <if test="delFlag == null"> and del_flag = 0 </if>
+		</where>
+		order by id limit 1
+	</select>
+		
+ 	<select id="count" resultType="int">
+		select count(*) from admin_auth_user
+		 <where>  
+		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  <if test="customerId != null and customerId != ''"> and customer_id = #{customerId} </if>
+		  <if test="userName != null and userName != ''"> and user_name = #{userName} </if>
+		  <if test="userAccount != null and userAccount != ''"> and user_account = #{userAccount} </if>
+		  <if test="userPassword != null and userPassword != ''"> and user_password = #{userPassword} </if>
+		  <if test="userType != null and userType != ''"> and user_type = #{userType} </if>
+		  <if test="userEmail != null and userEmail != ''"> and user_email = #{userEmail} </if>
+		  <if test="userMobile != null and userMobile != ''"> and user_mobile = #{userMobile} </if>
+		  <if test="userIdcard != null and userIdcard != ''"> and user_idcard = #{userIdcard} </if>
+		  <if test="userPic != null and userPic != ''"> and user_pic = #{userPic} </if>
+		  <if test="lastLoginTime != null and lastLoginTime != ''"> and last_login_time = #{lastLoginTime} </if>
+		  <if test="userStatus != null and userStatus != ''"> and user_status = #{userStatus} </if>
+		  <if test="unitId != null and unitId != ''"> and unit_id = #{unitId} </if>
+		  <if test="deptId != null and deptId != ''"> and dept_id = #{deptId} </if>
+		  <if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+		  <if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+		  <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy} </if>
+		  <if test="updateDate != null and updateDate != ''"> and update_date = #{updateDate} </if>
+		  <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+		   <if test="delFlag == null"> and del_flag = 0 </if>
+		</where>
+		
+	</select>
+	 
+	<insert id="save" parameterType="fastwave.service.auth.user.entity.User" useGeneratedKeys="true" keyProperty="id">
+		insert into admin_auth_user
+		(
+			`customer_id`, 
+			`user_name`, 
+			`user_account`, 
+			`user_password`, 
+			`user_type`, 
+			`user_email`, 
+			`user_mobile`, 
+			`user_idcard`, 
+			`user_pic`, 
+			`last_login_time`, 
+			`user_status`, 
+			`unit_id`, 
+			`dept_id`, 
+			`create_by`, 
+			`create_date`, 
+			`update_by`, 
+			`update_date`, 
+			`del_flag`
+		)
+		values
+		(
+			#{customerId}, 
+			#{userName}, 
+			#{userAccount}, 
+			#{userPassword}, 
+			#{userType}, 
+			#{userEmail}, 
+			#{userMobile}, 
+			#{userIdcard}, 
+			#{userPic}, 
+			#{lastLoginTime}, 
+			#{userStatus}, 
+			#{unitId}, 
+			#{deptId}, 
+			#{createBy}, 
+			#{createDate}, 
+			#{updateBy}, 
+			#{updateDate}, 
+			#{delFlag}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="fastwave.service.auth.user.entity.User">
+		update admin_auth_user 
+		<set>
+			<if test="customerId != null">`customer_id` = #{customerId}, </if>
+			<if test="userName != null">`user_name` = #{userName}, </if>
+			<if test="userAccount != null">`user_account` = #{userAccount}, </if>
+			<if test="userPassword != null">`user_password` = #{userPassword}, </if>
+			<if test="userType != null">`user_type` = #{userType}, </if>
+			<if test="userEmail != null">`user_email` = #{userEmail}, </if>
+			<if test="userMobile != null">`user_mobile` = #{userMobile}, </if>
+			<if test="userIdcard != null">`user_idcard` = #{userIdcard}, </if>
+			<if test="userPic != null">`user_pic` = #{userPic}, </if>
+			<if test="lastLoginTime != null">`last_login_time` = #{lastLoginTime}, </if>
+			<if test="userStatus != null">`user_status` = #{userStatus}, </if>
+			<if test="unitId != null">`unit_id` = #{unitId}, </if>
+			<if test="deptId != null">`dept_id` = #{deptId}, </if>
+			<if test="createBy != null">`create_by` = #{createBy}, </if>
+			<if test="createDate != null">`create_date` = #{createDate}, </if>
+			<if test="updateBy != null">`update_by` = #{updateBy}, </if>
+			<if test="updateDate != null">`update_date` = #{updateDate}, </if>
+			<if test="delFlag != null">`del_flag` = #{delFlag}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<update id="remove">
+		update admin_auth_user 
+		<set>
+          `del_flag`=1
+		</set>
+		where id in 
+		<foreach item="id" collection="list" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</update>
+</mapper>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="fastwave.service.auth.user.dao.OrgDao">
+
+    <resultMap type="fastwave.service.auth.user.entity.Org" id="adminAuthOrgResultMap">
+        <id column="id" property="id"/>
+        <result column="customer_id"  property="customerId"/>
+        <result column="org_name"  property="orgName"/>
+        <result column="org_code"  property="orgCode"/>
+        <result column="pid"  property="pid"/>
+        <result column="data_mode"  property="dataMode"/>
+        <result column="district_id"  property="districtId"/>
+        <result column="virtual_node"  property="virtualNode"/>
+        <result column="create_by"  property="createBy"/>
+        <result column="create_date"  property="createDate"/>
+        <result column="update_by"  property="updateBy"/>
+        <result column="update_date"  property="updateDate"/>
+        <result column="del_flag"  property="delFlag"/>
+    </resultMap>
+    
+	<select id="get" resultType="fastwave.service.auth.user.entity.Org">
+		select `id`,`customer_id`,`org_name`,`org_code`,`pid`,`data_mode`,`district_id`,`virtual_node`,`create_by`,`create_date`,`update_by`,`update_date`,`del_flag` from admin_auth_org where id = #{id}
+	</select>
+
+	<select id="list" resultType="fastwave.service.auth.user.entity.Org">
+		select `id`,`customer_id`,`org_name`,`org_code`,`pid`,`data_mode`,`district_id`,`virtual_node`,`create_by`,`create_date`,`update_by`,`update_date`,`del_flag` from admin_auth_org
+        <where>  
+		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  <if test="customerId != null and customerId != ''"> and customer_id = #{customerId} </if>
+		  <if test="orgName != null and orgName != ''"> and org_name = #{orgName} </if>
+		  <if test="orgCode != null and orgCode != ''"> and org_code = #{orgCode} </if>
+		  <if test="pid != null and pid != ''"> and pid = #{pid} </if>
+		  <if test="dataMode != null and dataMode != ''"> and data_mode = #{dataMode} </if>
+          <if test="districtId != null and districtId != ''"> and district_id = #{districtId} </if>
+          <if test="virtualNode != null and virtualNode != ''"> and virtual_node = #{virtualNode} </if>
+		  <if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+		  <if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+		  <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy} </if>
+		  <if test="updateDate != null and updateDate != ''"> and update_date = #{updateDate} </if>
+		  <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+ 		  <if test="delFlag == null"> and del_flag = 0 </if>
+		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+		
+ 	<select id="count" resultType="int">
+		select count(*) from admin_auth_org
+		 <where>  
+		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  <if test="customerId != null and customerId != ''"> and customer_id = #{customerId} </if>
+		  <if test="orgName != null and orgName != ''"> and org_name = #{orgName} </if>
+		  <if test="orgCode != null and orgCode != ''"> and org_code = #{orgCode} </if>
+		  <if test="pid != null and pid != ''"> and pid = #{pid} </if>
+		  <if test="dataMode != null and dataMode != ''"> and data_mode = #{dataMode} </if>
+          <if test="districtId != null and districtId != ''"> and district_id = #{districtId} </if>
+          <if test="virtualNode != null and virtualNode != ''"> and virtual_node = #{virtualNode} </if>
+		  <if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+		  <if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+		  <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy} </if>
+		  <if test="updateDate != null and updateDate != ''"> and update_date = #{updateDate} </if>
+		  <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+          <if test="delFlag == null"> and del_flag = 0 </if>
+		</where>
+	</select>
+	 
+	<insert id="save" parameterType="fastwave.service.auth.user.entity.Org" useGeneratedKeys="true" keyProperty="id">
+		insert into admin_auth_org
+		(
+			`customer_id`, 
+			`org_name`, 
+			`org_code`, 
+			`pid`, 
+			`data_mode`,
+			`district_id`,
+			`virtual_node`,
+			`create_by`, 
+			`create_date`, 
+			`update_by`, 
+			`update_date`, 
+			`del_flag`
+		)
+		values
+		(
+			#{customerId}, 
+			#{orgName}, 
+			#{orgCode}, 
+			#{pid}, 
+			#{dataMode},
+			#{districtId},
+			#{virtualNode},
+			#{createBy}, 
+			#{createDate}, 
+			#{updateBy}, 
+			#{updateDate}, 
+			#{delFlag}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="fastwave.service.auth.user.entity.Org">
+		update admin_auth_org 
+		<set>
+			<if test="customerId != null">`customer_id` = #{customerId}, </if>
+			<if test="orgName != null">`org_name` = #{orgName}, </if>
+			<if test="orgCode != null">`org_code` = #{orgCode}, </if>
+			<if test="pid != null">`pid` = #{pid}, </if>
+			<if test="dataMode != null">`data_mode` = #{dataMode}, </if>
+            <if test="districtId != null">`district_id` = #{districtId}, </if>
+            <if test="virtualNode != null">`virtual_node` = #{virtualNode}</if>
+			<if test="createBy != null">`create_by` = #{createBy}, </if>
+			<if test="createDate != null">`create_date` = #{createDate}, </if>
+			<if test="updateBy != null">`update_by` = #{updateBy}, </if>
+			<if test="updateDate != null">`update_date` = #{updateDate}, </if>
+			<if test="delFlag != null">`del_flag` = #{delFlag}, </if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<update id="remove">
+		update admin_auth_org 
+		<set>
+          `del_flag`=1
+		</set>
+		where id in 
+		<foreach item="id" collection="list" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</update>
+	
+	<select id="listOrgByMonitorId" resultType="fastwave.service.auth.user.entity.Org">
+		SELECT
+			a.id,
+			a.org_code orgcode
+		FROM
+			admin_auth_org a
+		RIGHT JOIN admin_auth_monitor_org b ON a.id = b.org_id
+		WHERE
+			b.monitor_id =#{monitorId}
+	</select>
+</mapper>
