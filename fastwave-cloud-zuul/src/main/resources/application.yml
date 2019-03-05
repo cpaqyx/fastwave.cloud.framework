@@ -2,7 +2,7 @@ spring:
   application:
     name: fastwave-cloud-zuul
   redis:
-    host: 10.101.43.125
+    host: 10.101.43.196
     port: 6379
     password: 
     # 连接超时时间（毫秒）
