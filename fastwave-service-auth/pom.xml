@@ -10,7 +10,7 @@
 		<relativePath>../fastwave-common-pom/pom.xml</relativePath>
 	</parent>
 
-	<artifactId>fastwave-common-auth</artifactId>
+	<artifactId>fastwave-service-auth</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	
 	<dependencies>
