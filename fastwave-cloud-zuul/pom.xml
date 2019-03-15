@@ -64,6 +64,7 @@
 					<repository>fastwave/${project.artifactId}</repository>
 					<buildArgs>
 						<JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
+						<LISTEN_PORT>8555</LISTEN_PORT>
 					</buildArgs>
 				</configuration>
 			</plugin>
