@@ -51,7 +51,7 @@ eureka:
     healthcheck:
       enabled: true
     serviceUrl:
-      defaultZone: http://10.101.43.197:8761/eureka
+      defaultZone: http://192.168.2.117:8761/eureka
       #defaultZone: http://peer1:8761/eureka/,http://peer2:8762/eureka,http://peer3:8763/eureka
   instance:
     prefer-ip-address: true

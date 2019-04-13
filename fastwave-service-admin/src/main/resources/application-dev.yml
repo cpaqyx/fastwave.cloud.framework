@@ -8,13 +8,7 @@ spring:
   datasource:
     #type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.jdbc.Driver
-#    url: jdbc:mysql://127.0.0.1:3306/bootdo?useUnicode=true&characterEncoding=utf8
-#    username: root
-#    password: 123456
-#    url: jdbc:mysql://dev.juwins.com:3060/iot?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&autoReconnect=true&failOverReadOnly=false&failOverReadOnly=false&allowMultiQueries=true&useSSL=false
-#    username: iot
-#    password: Juwins@2018
-    url: jdbc:mysql://10.101.43.171:3306/fastwave?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&autoReconnect=true&failOverReadOnly=false&failOverReadOnly=false&allowMultiQueries=true&useSSL=false
+    url: jdbc:mysql://192.168.2.115:3306/fastwave?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&autoReconnect=true&failOverReadOnly=false&failOverReadOnly=false&allowMultiQueries=true&useSSL=false
     username: root
     password: 123456
     initialSize: 1
@@ -40,7 +34,7 @@ spring:
     # 合并多个DruidDataSource的监控数据
     #useGlobalDataSourceStat: true
   redis:
-      host: 10.101.43.196
+      host: 192.168.2.115
       port: 6379
       password:
       # 连接超时时间（毫秒）

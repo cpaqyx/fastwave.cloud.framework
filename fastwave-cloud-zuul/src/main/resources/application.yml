@@ -2,7 +2,7 @@ spring:
   application:
     name: fastwave-cloud-zuul
   redis:
-    host: 10.101.43.196
+    host: 192.168.2.115
     port: 6379
     password: 
     # 连接超时时间（毫秒）
@@ -27,7 +27,7 @@ eureka:
     healthcheck:
       enabled: true
     serviceUrl:
-      defaultZone: http://10.101.43.197:8761/eureka
+      defaultZone: http://192.168.2.117:8761/eureka
   instance:
     prefer-ip-address: true
     instance-id: ${spring.application.name}:${spring.cloud.client.ipAddress}:${spring.application.instance_id:${server.port}}

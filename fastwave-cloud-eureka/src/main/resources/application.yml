@@ -6,7 +6,7 @@ eureka:
     register-with-eureka: false
     fetch-registry: false
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://192.168.2.117:8761/eureka
 
 ###############################单节点配置##############################################
 #server:
@@ -28,7 +28,7 @@ eureka:
 #    register-with-eureka: false
 #    fetch-registry: false
 #    service-url:
-#      defaultZone: http://localhost:8761/eureka
+#      defaultZone: http://192.168.2.117:8761/eureka
       
 #security:
 #  basic:
